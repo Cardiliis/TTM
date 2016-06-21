@@ -10,7 +10,7 @@
  -		$awayperiodenddate,
  -		$awayperiodinhour,
  -
- -	public function __construct(Contributor $contributor, $awayperiodstartdate, $awayperiodenddate, $awayperiodinhour)
+ -	public function __construct($name, $awayperiodstartdate, $awayperiodenddate, $awayperiodinhour)
  -	{
  -		$this->contributor = $contributor;
  -		$this->awayperiodstartdate = $awayperiodstartdate;
@@ -18,13 +18,9 @@
  -		$this->awayperiodinhour = $awayperiodinhour;
  -	}
  -
- -	public function getAbsence ()
+ -	public function getName ()
  -	{
- -		return $this->absence;
+ -		return $this->name;
  -	}
  -
- -	public function getAbsenceList ()
- -	{
- -		return new AbsenceCollection ($absences);
- -	}
  -}
