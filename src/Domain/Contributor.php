@@ -4,22 +4,22 @@
 
  Class Contributor
  {
- 	private
- 		$login,
- 		$firstname,
- 		$lastname,
+   private
+     $login,
+     $firstname,
+     $lastname,
 
- 	public function __construct($login, $firstname, $lastname)
- 	{
- 		$this->login = $login;
- 		$this->firstname = $firstname;
- 		$this->lastname = $lastname;
- 	}
+   public function __construct($login, $firstname, $lastname)
+   {
+     $this->login = $login;
+     $this->firstname = $firstname;
+     $this->lastname = $lastname;
+   }
 
- 	public function getLogin ()
- 	{
- 		return $this->login;
- 	}
+   public function getLogin ()
+   {
+     return $this->login;
+   }
 
     public function getFirstName()
     {

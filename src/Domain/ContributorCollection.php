@@ -4,23 +4,23 @@
 
  Class Absence
  {
- 	private
- 		$contributor,
- 		$awayperiodstartdate,
- 		$awayperiodenddate,
- 		$awayperiodinhour,
+   private
+     $contributor,
+     $awayperiodstartdate,
+     $awayperiodenddate,
+     $awayperiodinhour,
 
- 	public function __construct($name, $awayperiodstartdate, $awayperiodenddate, $awayperiodinhour)
- 	{
- 		$this->contributor = $contributor;
- 		$this->awayperiodstartdate = $awayperiodstartdate;
- 		$this->awayperiodenddate = $awayperiodstartdate;
- 		$this->awayperiodinhour = $awayperiodinhour;
- 	}
+   public function __construct($name, $awayperiodstartdate, $awayperiodenddate, $awayperiodinhour)
+   {
+     $this->contributor = $contributor;
+     $this->awayperiodstartdate = $awayperiodstartdate;
+     $this->awayperiodenddate = $awayperiodstartdate;
+     $this->awayperiodinhour = $awayperiodinhour;
+   }
 
- 	public function getName ()
- 	{
- 		return $this->name;
- 	}
+   public function getName ()
+   {
+     return $this->name;
+   }
 
  }
