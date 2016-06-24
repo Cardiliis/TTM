@@ -11,13 +11,18 @@
      $awayPeriodStartDate,
      $awayPeriodEndDate,
      $awayPeriodInHour,
+     $isChecked,
+     $isValidated,
 
-   public function __construct(Contributor $contributor, $awayPeriodStartDate, $awayPeriodEndDate, $awayPeriodInHour)
+
+   public function __construct(Contributor $contributor, $awayPeriodStartDate, $awayPeriodEndDate, $awayPeriodInHour, $isChecked, $isValidated)
    {
      $this->contributor = $contributor;
-     $this->awayperiodstartdate = $awayPeriodStartDate;
-     $this->awayperiodenddate = $awayPeriodEndDate;
-     $this->awayperiodinhour = $awayPeriodInHour;
+     $this->awayPeriodStartDate = $awayPeriodStartDate;
+     $this->awayPeriodEndDate = $awayPeriodEndDate;
+     $this->awayPeriodInHour = $awayPeriodInHour;
+     $this->isChecked = $isChecked;
+     $this->isValidated = $isValidated;
    }
 
    public function getAbsence ()
@@ -29,4 +34,15 @@
    {
      return new AbsenceCollection ($absences);
    }
+
+   public function IsChecked ()
+   {
+     return $this->isChecked;
+   }
+
+   public function IsValidated ()
+   {
+     return $this->isValidated;
+   }
+
  }

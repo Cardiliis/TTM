@@ -8,21 +8,17 @@
  {
    private
      $contributor,
-     $awayPeriodStartDate,
-     $awayPeriodEndDate,
-     $awayPeriodInHour,
 
-   public function __construct($name, $awayPeriodStartDate, $awayPeriodEndDate, $awayPeriodInHour)
+   public function __construct($contributor)
    {
      $this->contributor = $contributor;
-     $this->awayPeriodStartDate = $awayPeriodStartDate;
-     $this->awayPeriodEndDate = $awayPeriodEndDate;
-     $this->awayPeriodInHour = $awayPeriodInHour;
+
    }
 
    public function getName ()
    {
      return $this->name;
+
    }
 
  }
