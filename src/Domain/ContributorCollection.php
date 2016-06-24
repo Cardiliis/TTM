@@ -1,21 +1,23 @@
 <?php
 
- namespace Teamtimemanager\Domain;
+ namespace TeamTimeManager\Domain;
 
- Class Absence
+ use TeamTimeManager\Domain\Contributor;
+
+ Class ContributorCollection
  {
    private
      $contributor,
-     $awayperiodstartdate,
-     $awayperiodenddate,
-     $awayperiodinhour,
+     $awayPeriodStartDate,
+     $awayPeriodEndDate,
+     $awayPeriodInHour,
 
-   public function __construct($name, $awayperiodstartdate, $awayperiodenddate, $awayperiodinhour)
+   public function __construct($name, $awayPeriodStartDate, $awayPeriodEndDate, $awayPeriodInHour)
    {
      $this->contributor = $contributor;
-     $this->awayperiodstartdate = $awayperiodstartdate;
-     $this->awayperiodenddate = $awayperiodstartdate;
-     $this->awayperiodinhour = $awayperiodinhour;
+     $this->awayPeriodStartDate = $awayPeriodStartDate;
+     $this->awayPeriodEndDate = $awayPeriodEndDate;
+     $this->awayPeriodInHour = $awayPeriodInHour;
    }
 
    public function getName ()

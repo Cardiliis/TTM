@@ -1,8 +1,10 @@
 <?php
 
- namespace Teamtimemanager\Domain;
+ namespace TeamTimeManager\Domain;
 
- Class Absence
+ use TeamTimeManager\Domain\Absence;
+
+ Class AbsenceCollection
  {
    private
      $contributor,

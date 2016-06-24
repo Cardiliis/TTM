@@ -1,6 +1,6 @@
 <?php
 
-namespace Teamtimemanager\Services;
+namespace TeamTimeManager\Services;
 
  Class Data
  {

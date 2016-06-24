@@ -1,19 +1,19 @@
 <?php
 
- namespace Teamtimemanager\Domain;
+ namespace TeamTimeManager\Domain;
 
  Class Contributor
  {
    private
      $login,
-     $firstname,
-     $lastname,
+     $firstName,
+     $lastName,
 
-   public function __construct($login, $firstname, $lastname)
+   public function __construct($login, $firstName, $lastName)
    {
      $this->login = $login;
-     $this->firstname = $firstname;
-     $this->lastname = $lastname;
+     $this->firstName = $firstName;
+     $this->lastName = $lastName;
    }
 
    public function getLogin ()
@@ -23,12 +23,12 @@
 
     public function getFirstName()
     {
-      return $this->firstname;
+      return $this->firstName;
     }
 
     public function getLastName()
     {
-      return $this->firstname;
+      return $this->lastName;
     }
 
     public function getContributor()

@@ -1,5 +1,5 @@
 <?php
-namespace Teamtimemanager\Domain;
+namespace TeamTimeManager\Domain;
 interface Collection extends \Traversable, \Countable
 {
 }
