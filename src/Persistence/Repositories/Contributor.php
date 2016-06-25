@@ -2,13 +2,10 @@
 
 namespace TeamTimeManager\Persistence\Repositories;
 
+use TeamTimeManager\Domain;
+
 class Contributor implements ContributorRepository
 {
-   public function __construct()
-   {
-
-   }
-
    public function find($login)
     {
       return new Contributor ($contributor)
@@ -16,7 +13,11 @@ class Contributor implements ContributorRepository
 
    public function findAll()
    {
-      return new ContributorCollection($contributors)
+      private ContributorCollection contributorCollection;
+
+      
+
+      return new contributorCollection()
    }
 
 }

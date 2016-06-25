@@ -2,23 +2,46 @@
 
  namespace TeamTimeManager\Domain;
 
- use TeamTimeManager\Domain\Contributor;
+ use TeamTimeManager\Domain;
 
- Class ContributorCollection
+ Class ContributorCollection implements \IteratorAggregate, Collection
  {
    private
-     $contributor,
+     $contributors;
 
-   public function __construct($contributor)
+   public function __construct()
    {
-     $this->contributor = $contributor;
+     $this->contributors = array();
 
    }
 
-   public function getName ()
+   public function add(Contributor $contributor)
    {
-     return $this->name;
+      $this->contributors[$contributor->getLogin()] = $contributor;
+      return $this;
+   }
 
+   public function getIterator()
+       {
+           return new \ArrayIterator($this->contributors);
+       }
+
+   /**
+   * @return Contributor
+   */
+
+   public function getByLogin($login)
+   {
+      if(isset($this->contributors[$login]))
+      {
+         return $this->contributors[$login];
+      }
+      throw new \RuntimeException("Contributor $login not found");
+   }
+
+   public function count()
+   {
+      return iterator_count($this);
    }
 
  }

@@ -4,25 +4,44 @@
 
  use TeamTimeManager\Domain\Absence;
 
- Class AbsenceCollection
+ Class AbsenceCollection implements \IteratorAggregate, Collection
  {
    private
-     $contributor,
-     $awayperiodstartdate,
-     $awayperiodenddate,
-     $awayperiodinhour,
+     absences;
 
-   public function __construct($name, $awayperiodstartdate, $awayperiodenddate, $awayperiodinhour)
-   {
-     $this->contributor = $contributor;
-     $this->awayperiodstartdate = $awayperiodstartdate;
-     $this->awayperiodenddate = $awayperiodstartdate;
-     $this->awayperiodinhour = $awayperiodinhour;
-   }
+     public function __construct()
+     {
+       $this->absences = array();
 
-   public function getName ()
-   {
-     return $this->name;
-   }
+     }
+
+     public function add(Absence $absence)
+     {
+        $this->absences[$absence->getLogin()] = $absence;
+        return $this;
+     }
+
+     public function getIterator()
+         {
+             return new \ArrayIterator($this->absences);
+         }
+
+     /**
+     * @return Absence
+     */
+
+     public function getByContributor($login)
+     {
+        if(isset($this->absences->contributor[$login]))
+        {
+           return $this->absences->contributor[$login];
+        }
+        throw new \RuntimeException("Absence for contributor $login not found");
+     }
+
+     public function count()
+     {
+        return iterator_count($this);
+     }
 
  }
