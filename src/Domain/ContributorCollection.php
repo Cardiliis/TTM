@@ -4,25 +4,26 @@
 
  use TeamTimeManager\Domain;
 
- Class ContributorCollection implements \IteratorAggregate, Collection
+ Class ContributorCollection implements \IteratorAggregate, \Countable, Collection
  {
    private
-     $contributors;
+   $contributors;
 
    public function __construct()
    {
-     $this->contributors = array();
-
+      $this->contributors = array();
    }
 
    public function add(Contributor $contributor)
    {
       $this->contributors[$contributor->getLogin()] = $contributor;
+
       return $this;
    }
 
    public function getIterator()
        {
+
            return new \ArrayIterator($this->contributors);
        }
 
@@ -34,6 +35,7 @@
    {
       if(isset($this->contributors[$login]))
       {
+
          return $this->contributors[$login];
       }
       throw new \RuntimeException("Contributor $login not found");

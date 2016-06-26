@@ -4,27 +4,28 @@
 
  use TeamTimeManager\Domain\Absence;
 
- Class AbsenceCollection implements \IteratorAggregate, Collection
+ Class AbsenceCollection implements \IteratorAggregate, \Countable, Collection
  {
-   private
-     absences;
+     private
+     $absences;
+     $contributor;
 
      public function __construct()
      {
-       $this->absences = array();
-
+         $this->absences = array();
      }
 
      public function add(Absence $absence)
      {
-        $this->absences[$absence->getLogin()] = $absence;
-        return $this;
+         $this->absences[$absence->getLogin()] = $absence;
+
+         return $this;
      }
 
      public function getIterator()
-         {
-             return new \ArrayIterator($this->absences);
-         }
+     {
+         return new \ArrayIterator($this->absences);
+     }
 
      /**
      * @return Absence
@@ -32,16 +33,18 @@
 
      public function getByContributor($login)
      {
-        if(isset($this->absences->contributor[$login]))
-        {
-           return $this->absences->contributor[$login];
-        }
-        throw new \RuntimeException("Absence for contributor $login not found");
+         if(isset($this->absences->contributor[$login]))
+         {
+
+             return $this->absences->contributor[$login];
+         }
+
+         throw new \RuntimeException("Absence for contributor $login not found");
      }
 
      public function count()
      {
-        return iterator_count($this);
-     }
 
+         return iterator_count($this);
+     }
  }

@@ -6,18 +6,17 @@ use TeamTimeManager\Domain;
 
 class Contributor implements ContributorRepository
 {
+   private ContributorCollection $contributorCollection;
+
    public function find($login)
-    {
+   {
       return new Contributor ($contributor)
-    }
+   }
 
    public function findAll()
    {
-      private ContributorCollection contributorCollection;
 
-      
-
-      return new contributorCollection()
+      return $contributorCollection
    }
 
 }

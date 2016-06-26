@@ -16,7 +16,7 @@
      $this->lastName = $lastName;
    }
 
-   public function getLogin ()
+   public function getLogin()
    {
      return $this->login;
    }

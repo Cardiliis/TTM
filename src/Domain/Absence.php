@@ -25,22 +25,22 @@
      $this->isValidated = $isValidated;
    }
 
-   public function getAbsence ()
+   public function getAbsence()
    {
      return $this->absence;
    }
 
-   public function getAbsenceList ()
+   public function getAbsenceList()
    {
      return new AbsenceCollection ($absences);
    }
 
-   public function IsChecked ()
+   public function IsChecked()
    {
      return $this->isChecked;
    }
 
-   public function IsValidated ()
+   public function IsValidated()
    {
      return $this->isValidated;
    }
