@@ -4,10 +4,9 @@ namespace TeamTimeManager\Services;
 
  Class Data
  {
-
- 	public function findAllContributors()
- 	{
-    return new ContributorCollection($contributors)
- 	}
-
+     public function findAllContributors()
+     {
+         return new ContributorCollection($contributors);
+     }
+     
  }

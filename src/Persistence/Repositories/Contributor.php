@@ -6,17 +6,38 @@ use TeamTimeManager\Domain;
 
 class Contributor implements ContributorRepository
 {
-   private ContributorCollection $contributorCollection;
+   private $contributorCollection;
+
+   Public function __construct()
+   {
+       $this->contributorCollection = new Domain\ContributorCollection();
+
+       $this.initializeStub();
+   }
 
    public function find($login)
    {
-      return new Contributor ($contributor)
+      return $this->contributorCollection->getByLogin($login);
    }
 
    public function findAll()
    {
+      return $this->contributorCollection();
+   }
 
-      return $contributorCollection
+   private function initializeStub()
+   {
+       $contributors = array(
+           'poney', 'My', 'Little'
+           'burger', 'Big', 'Tasty'
+           'auger', 'Francois', 'Auger'
+
+       );
+
+       foreach($contributors as $contributor)
+       {
+           $this->contributorCollection->add(new Contributor($login, $firstName, $lastName));
+       }
    }
 
 }
