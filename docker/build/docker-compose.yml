@@ -1,0 +1,10 @@
+version: '0'
+
+server :
+    build: ../demo/images/TeamTimeManager
+    image: TTM/demo/TeamTimeManager
+    ports :
+        - "80:80"
+    container_name: TTM-test
+    volumes:
+        - ./var:/var/www/TTM
