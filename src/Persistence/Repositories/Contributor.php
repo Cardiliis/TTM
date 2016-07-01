@@ -12,7 +12,7 @@ class Contributor implements ContributorRepository
    {
        $this->contributorCollection = new Domain\ContributorCollection();
 
-       $this.initializeStub();
+       $this->initializeStub();
    }
 
    public function find($login)
@@ -22,7 +22,7 @@ class Contributor implements ContributorRepository
 
    public function findAll()
    {
-      return $this->contributorCollection();
+      return $this->contributorCollection->getContributorList();
    }
 
    private function initializeStub()
