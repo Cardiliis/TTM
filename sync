@@ -1,0 +1,121 @@
+#!/bin/bash
+
+USER='francois'
+
+REMOTE_DIR="/home/${USER}/sandbox/TTM"
+REMOTE_SERVER="192.168.56.102"
+
+function lessCompilation {
+   echo -e '\e[32m--- Compiling less files ---\e[0m'
+   ssh ${USER}@$REMOTE_SERVER "cd $REMOTE_DIR && ./lessc"
+}
+
+function assetic {
+   echo -e '\e[32m--- Dumping assets ---\e[0m'
+   ssh ${USER}@$REMOTE_SERVER "cd $REMOTE_DIR && php console assetic:dump"
+}
+
+function showHelp {
+   echo -e "Sync tool"
+   echo -e " "
+   echo -e "options:"
+   echo -e "-d, --delete              \e[32mDelete extraneous files from dest dirs\e[0m"
+   echo -e "-f, --force               \e[32mDelete all distant files before sync\e[0m"
+   echo -e "-c, --composer                \e[32mInstall dependencies\e[0m"
+   echo -e "-l, --less                \e[32mRun the less compilation after sync\e[0m"
+   echo -e "-k, --karma               \e[32mRun the configuration hydration after sync\e[0m"
+   echo -e "-a, --assetic             \e[32mDump assets after sync\e[0m"
+   echo -e "--all                     \e[32mThe complete bundle, equivalent to -f -l -k -a\e[0m"
+}
+
+function clearRemoteDir {
+   echo -e "\e[32m--- Cleaning remote directory ---\e[0m"
+   ssh ${USER}@$REMOTE_SERVER "rm -rf $REMOTE_DIR/*"
+}
+
+function karma {
+   echo -e '\e[32m--- hydrating configuration values ---\e[0m'
+   ssh ${USER}@$REMOTE_SERVER "cd $REMOTE_DIR && vendor/bin/karma hydrate -e dev"
+}
+
+function composer {
+   echo -e '\e[32m--- Installing dependencies ---\e[0m'
+   ssh ${USER}@$REMOTE_SERVER "cd $REMOTE_DIR && php composer.phar install"
+}
+
+while test $# -gt 0; do
+   case "$1" in
+       -h|--help)
+           showHelp
+           exit 0
+           ;;
+           --all)
+               COMPOSER=true
+               ASSETIC=true
+               FORCE=true
+               LESSC=true
+               KARMA=true
+               shift
+               ;;
+           -c|--composer)
+               COMPOSER=true
+               shift
+               ;;
+           -a|--assetic)
+               ASSETIC=true
+               shift
+               ;;
+           -d|--delete)
+               DELETE="--delete"
+               shift
+               ;;
+           -f|--force)
+               FORCE=true
+               shift
+               ;;
+           -k|--karma)
+               KARMA=true
+               shift
+               ;;
+           -l|--less)
+               LESSC=true
+               shift
+               ;;
+           -7|--php7)
+               REMOTE_SERVER="192.168.1.20"
+               shift
+               ;;
+       *)
+           break
+           ;;
+   esac
+done
+
+if [ $FORCE ]; then
+   clearRemoteDir
+fi
+
+echo -e "\e[32m--- Synchronizing to \e[33m$REMOTE_SERVER\e[32m ---\e[0m"
+rsync -avz --exclude-from 'sync-exclusions' $DELETE . ${USER}@$REMOTE_SERVER:$REMOTE_DIR
+
+echo -e '\e[32m--- Setting directory rights ---\e[0m'
+ssh ${USER}@$REMOTE_SERVER "cd $REMOTE_DIR && chmod 777 -Rf var"
+ssh ${USER}@$REMOTE_SERVER "cd $REMOTE_DIR && chmod +x lessc"
+
+if [ $COMPOSER ]; then
+   composer
+fi
+
+if [ $KARMA ]; then
+   karma
+fi
+
+if [ $LESSC ]; then
+   lessCompilation
+fi
+
+if [ $ASSETIC ]; then
+   assetic
+fi
+
+exit 0;
