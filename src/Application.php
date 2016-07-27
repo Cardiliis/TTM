@@ -1,6 +1,6 @@
 <?php
 
-namespace Spear\Skeleton;
+namespace TeamTimeManager;
 
 use Spear\Silex\Application\AbstractApplication;
 use Silex\Provider\ServiceControllerServiceProvider;
@@ -35,5 +35,6 @@ class Application extends AbstractApplication
     protected function mountControllerProviders()
     {
         $this->mount('/', new Controllers\Home\Provider());
+        $this->mount('/consulter', new Controllers\Consultation\Provider());
     }
 }
