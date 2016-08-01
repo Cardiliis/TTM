@@ -1,6 +1,6 @@
 <?php
 
-namespace Spear\Skeleton;
+namespace TeamTimeManager;
 
 use Puzzle\Configuration;
 use Spear\Silex\Provider\Commands\AsseticDumper;

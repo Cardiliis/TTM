@@ -1,6 +1,6 @@
 <?php
 
-namespace TeamTimeManager\Controllers\Home;
+namespace TeamTimeManager\Controllers\Consultation;
 
 use Spear\Silex\Application\Traits;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,8 +20,8 @@ class Controller
         $this->logger = new NullLogger();
     }
 
-    public function homeAction()
+    public function absencesAction()
     {
-        return $this->render('home.html.twig');
+        return $this->render('absences/consulter.twig', ['quoi' => 'tout']);
     }
 }

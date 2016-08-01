@@ -1,6 +1,6 @@
 <?php
 
-namespace TeamTimeManager\Controllers\Home;
+namespace TeamTimeManager\Controllers\Consultation;
 
 use Silex\ControllerProviderInterface;
 use Silex\Application;
@@ -9,7 +9,7 @@ class Provider implements ControllerProviderInterface
 {
     public function connect(Application $app)
     {
-        $app['controller.home'] = function() use($app) {
+        $app['controller.consulter'] = function() use($app) {
             $controller = new Controller();
             $controller
                 ->setRequest($app['request'])
@@ -21,9 +21,9 @@ class Provider implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers
-            ->match('/', 'controller.home:homeAction')
+            ->match('/absences', 'controller.consulter:absencesAction')
             ->method('GET')
-            ->bind('home');
+            ->bind('consulter_absences');
 
         return $controllers;
     }

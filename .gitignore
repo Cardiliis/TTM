@@ -6,3 +6,13 @@ var/
 
 # Application hydrated configuration files
 config/*.yml
+
+# Assets
+assets/compiled/
+www/
+
+# Eclipse files
+.buildpath
+.project
+.settings/
+
