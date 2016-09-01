@@ -36,100 +36,64 @@ class Date
 
     public function getNextBoundary()
     {
-        $day = (int) $this->datetime->format('N');
-        $hour = (int) $this->datetime->format('H');
-        $minute = (int) $this->datetime->format('i');
-
-        if($day >= 6 || ($day === 5 && ($hour > 16 || ($hour === 16 && $minute >= 30) ) ) )
+        foreach($this->getWorkHours() as $startTime => $endTime)
         {
-            $nbDays = 8 - $day;
-            $interval = sprintf("P%dD", $nbDays);
+            list($startHour,  $startMinute) = explode(":", $startTime);
+            list($endHour,  $endMinute) = explode(":", $endTime);
 
-            $dt = $this->datetime->add(new \DateInterval($interval));
-            $dt = $dt->setTime(8, 30);
+            $startTime = $this->datetime->setTime($startHour, $startMinute);
+            $endTime = $this->datetime->setTime($endHour, $endMinute);
+            if($this->datetime < $startTime)
+            {
+                $dt = $this->datetime->setTime($startTime->format('H'), $startTime->format('i'));
 
-            return new Date($dt);
+                return new Date($dt);
+            }
+
+            if($this->datetime < $endTime)
+            {
+                $dt = $this->datetime->setTime($endTime->format('H'), $endTime->format('i'));
+
+                return new Date($dt);
+            }
         }
 
-        if($hour < 8 || ($hour === 8 && $minute < 30) )
-        {
-            $dt = $this->datetime->setTime(8, 30);
+        $dt = $this->datetime->modify("tomorrow");
+        $date = new Date($dt);
 
-            return new Date($dt);
-        }
-
-        if($hour < 13)
-        {
-            $dt = $this->datetime->setTime(13, 0);
-
-            return new Date($dt);
-        }
-
-        if($hour < 14)
-        {
-            $dt = $this->datetime->setTime(14, 0);
-
-            return new Date($dt);
-        }
-
-        if($hour < 17)
-        {
-            $nextHour = $day === 5 ? 16: 17;
-            $dt = $this->datetime->setTime($nextHour, 30);
-
-            return new Date($dt);
-        }
-
-        $dt = $this->datetime->add(new \DateInterval('P1D'));
-        $dt = $dt->setTime(8, 30);
-
-        return new Date($dt);
-
+        return $date->getNextBoundary();
     }
 
     public function isAtWork()
     {
-        $day = (int) $this->datetime->format('N');
-        $hour = (int) $this->datetime->format('H');
-        $minute = (int) $this->datetime->format('i');
-
-        if($day >= 6)
+        $isAtWork = false;
+        foreach($this->getWorkHours() as $startTime => $endTime)
         {
-            return false;
-        }
+            list($startHour,  $startMinute) = explode(":", $startTime);
+            list($endHour,  $endMinute) = explode(":", $endTime);
 
-        if($hour < 8 || $hour > 17)
-        {
-            return false;
-        }
-
-        if($hour === 8)
-        {
-            return ($minute >= 30);
-        }
-
-        if($day === 5)
-        {
-            if($hour === 16)
+            $startTime = $this->datetime->setTime($startHour, $startMinute);
+            $endTime = $this->datetime->setTime($endHour, $endMinute);
+            if(($startTime <= $this->datetime) && ($this->datetime < $endTime))
             {
-                return ($minute < 30);
-            }
-            if($hour > 16)
-            {
-                return false;
+                $isAtWork = true;
+                break;
             }
         }
 
-        if($hour === 17)
-        {
-            return ($minute < 30);
-        }
+        return $isAtWork;
+    }
 
-        if($hour === 13)
-        {
-            return false;
-        }
+    private function getWorkHours()
+    {
+        $openingHours = [
+            'Mon' => ['08:30' => '13:00', '14:00' => '17:30'],
+            'Tue' => ['08:30' => '13:00', '14:00' => '17:30'],
+            'Wed' => ['08:30' => '13:00', '14:00' => '17:30'],
+            'Thu' => ['08:30' => '13:00', '14:00' => '17:30'],
+            'Fri' => ['08:30' => '13:00', '14:00' => '16:30'],
+        ];
 
-        return true;
+        return isset($openingHours[$this->datetime->format('D')]) ? $openingHours[$this->datetime->format('D')] : [];
     }
 }
