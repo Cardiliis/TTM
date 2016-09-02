@@ -66,7 +66,6 @@ class Date
 
     public function isAtWork()
     {
-        $isAtWork = false;
         foreach($this->getWorkHours() as $startTime => $endTime)
         {
             list($startHour,  $startMinute) = explode(":", $startTime);
@@ -76,12 +75,11 @@ class Date
             $endTime = $this->datetime->setTime($endHour, $endMinute);
             if(($startTime <= $this->datetime) && ($this->datetime < $endTime))
             {
-                $isAtWork = true;
-                break;
+                return true;
             }
         }
 
-        return $isAtWork;
+        return false;
     }
 
     private function getWorkHours()
