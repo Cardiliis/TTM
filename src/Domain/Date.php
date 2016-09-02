@@ -34,46 +34,59 @@ class Date
         return $this->datetime < $date->datetime;
     }
 
+    public function beforeOrEqual(Date $date)
+    {
+        return $this->before($date) || $this->equals($date);
+    }
+
+    public function setTime($hour, $minute)
+    {
+        $copy = clone $this;
+        $copy->datetime = $this->datetime->setTime($hour, $minute);
+
+        return $copy;
+    }
+
+    public function modify($modify)
+    {
+        $copy = clone $this;
+        $copy->datetime = $this->datetime->modify($modify);
+
+        return $copy;
+    }
+
     public function getNextBoundary()
     {
         foreach($this->getWorkHours() as $startTime => $endTime)
         {
-            list($startHour,  $startMinute) = explode(":", $startTime);
-            list($endHour,  $endMinute) = explode(":", $endTime);
-
-            $startTime = $this->datetime->setTime($startHour, $startMinute);
-            $endTime = $this->datetime->setTime($endHour, $endMinute);
-            if($this->datetime < $startTime)
+            list($startHour, $startMinute) = explode(':', $startTime);
+            $startDate = $this->setTime($startHour, $startMinute);
+            if($this->before($startDate))
             {
-                $dt = $this->datetime->setTime($startTime->format('H'), $startTime->format('i'));
-
-                return new Date($dt);
+                return $startDate;
             }
 
-            if($this->datetime < $endTime)
+            list($endHour, $endMinute) = explode(':', $endTime);
+            $endDate = $this->setTime($endHour, $endMinute);
+            if($this->before($endDate))
             {
-                $dt = $this->datetime->setTime($endTime->format('H'), $endTime->format('i'));
-
-                return new Date($dt);
+                return $endDate;
             }
         }
 
-        $dt = $this->datetime->modify("tomorrow");
-        $date = new Date($dt);
-
-        return $date->getNextBoundary();
+        return $this->modify("tomorrow")->getNextBoundary();
     }
 
     public function isAtWork()
     {
         foreach($this->getWorkHours() as $startTime => $endTime)
         {
-            list($startHour,  $startMinute) = explode(":", $startTime);
-            list($endHour,  $endMinute) = explode(":", $endTime);
+            list($startHour, $startMinute) = explode(':', $startTime);
+            list($endHour, $endMinute) = explode(':', $endTime);
 
-            $startTime = $this->datetime->setTime($startHour, $startMinute);
-            $endTime = $this->datetime->setTime($endHour, $endMinute);
-            if(($startTime <= $this->datetime) && ($this->datetime < $endTime))
+            $startDate = $this->setTime($startHour, $startMinute);
+            $endDate = $this->setTime($endHour, $endMinute);
+            if($startDate->beforeOrEqual($this) && $this->before($endDate))
             {
                 return true;
             }
@@ -92,6 +105,6 @@ class Date
             'Fri' => ['08:30' => '13:00', '14:00' => '16:30'],
         ];
 
-        return isset($openingHours[$this->datetime->format('D')]) ? $openingHours[$this->datetime->format('D')] : [];
+        return isset($openingHours[$this->format('D')]) ? $openingHours[$this->format('D')] : [];
     }
 }
