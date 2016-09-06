@@ -95,8 +95,43 @@ class Date
         return false;
     }
 
+    private function getEasterDatetime($year)
+    {
+        $march21 = new \DateTimeImmutable("$year-03-21");
+        $nbDaysBetween21MarchAndPaques = easter_days($year);
+
+        return $march21->add(new \DateInterval("P{$nbDaysBetween21MarchAndPaques}D"));
+    }
+
+    private function isHoliday()
+    {
+        $annee = $this->format('Y');
+        $easterSunday = $this->getEasterDatetime($annee);
+
+        $holidays = [
+            "Jour de l'an" => '01-01',
+            "Fête du travail" => '05-01',
+            "8 Mai 1945" => '05-08',
+            "Fête nationnale" => '07-14',
+            "Assomption" => '08-15',
+            "La Toussaint" => '11-01',
+            "Armistice" => '11-11',
+            "Noël" => '12-25',
+            "Lundi de Pâques" => $easterSunday->modify("+1 day")->format('m-d'),
+            "Jeudi de l'Ascencion" => $easterSunday->modify("+39 day")->format('m-d'),
+            "Lundi de Pentecôte" => $easterSunday->modify("+50 day")->format('m-d'),
+        ];
+
+        return in_array($this->format('m-d'), $holidays);
+    }
+
     private function getWorkHours()
     {
+        if($this->isHoliday())
+        {
+            return [];
+        }
+
         $openingHours = [
             'Mon' => ['08:30' => '13:00', '14:00' => '17:30'],
             'Tue' => ['08:30' => '13:00', '14:00' => '17:30'],
