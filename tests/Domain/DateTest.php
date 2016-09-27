@@ -133,6 +133,30 @@ class DateTest extends \PHPUnit_Framework_TestCase
                 ['2016-05-02T17:30:00', false],
             "debauche aprem vendredi" =>
                 ['2016-05-06T16:30:00', false],
+
+            "Jour de l'an" =>
+                ['2016-01-01T12:20:00', false],
+            "Fête du Travail" =>
+                ['2016-05-01T12:20:00', false],
+            "8 Mai 1945" =>
+                ['2016-05-08T12:20:00', false],
+            "Fête Nationale" =>
+                ['2016-07-14T12:20:00', false],
+            "Assomption" =>
+                ['2016-08-15T12:20:00', false],
+            "La Toussaint" =>
+                ['2016-11-01T12:20:00', false],
+            "Armistice" =>
+                ['2016-11-11T12:20:00', false],
+            "Noël" =>
+                ['2016-12-25T12:20:00', false],
+
+            "Lundi de Pâques" =>
+                ['2016-03-28T12:20:00', false],
+            "Jeudi de l'Ascension" =>
+                ['2016-05-05T12:20:00', false],
+            "Lundi de Pentecôte" =>
+                ['2016-05-16T12:20:00', false],
         ];
     }
 }

@@ -34,102 +34,112 @@ class Date
         return $this->datetime < $date->datetime;
     }
 
+    public function beforeOrEqual(Date $date)
+    {
+        return $this->before($date) || $this->equals($date);
+    }
+
+    public function setTime($hour, $minute)
+    {
+        $copy = clone $this;
+        $copy->datetime = $this->datetime->setTime($hour, $minute);
+
+        return $copy;
+    }
+
+    public function modify($modify)
+    {
+        $copy = clone $this;
+        $copy->datetime = $this->datetime->modify($modify);
+
+        return $copy;
+    }
+
     public function getNextBoundary()
     {
-        $day = (int) $this->datetime->format('N');
-        $hour = (int) $this->datetime->format('H');
-        $minute = (int) $this->datetime->format('i');
-
-        if($day >= 6 || ($day === 5 && ($hour > 16 || ($hour === 16 && $minute >= 30) ) ) )
+        foreach($this->getWorkHours() as $startTime => $endTime)
         {
-            $nbDays = 8 - $day;
-            $interval = sprintf("P%dD", $nbDays);
+            list($startHour, $startMinute) = explode(':', $startTime);
+            $startDate = $this->setTime($startHour, $startMinute);
+            if($this->before($startDate))
+            {
+                return $startDate;
+            }
 
-            $dt = $this->datetime->add(new \DateInterval($interval));
-            $dt = $dt->setTime(8, 30);
-
-            return new Date($dt);
+            list($endHour, $endMinute) = explode(':', $endTime);
+            $endDate = $this->setTime($endHour, $endMinute);
+            if($this->before($endDate))
+            {
+                return $endDate;
+            }
         }
 
-        if($hour < 8 || ($hour === 8 && $minute < 30) )
-        {
-            $dt = $this->datetime->setTime(8, 30);
-
-            return new Date($dt);
-        }
-
-        if($hour < 13)
-        {
-            $dt = $this->datetime->setTime(13, 0);
-
-            return new Date($dt);
-        }
-
-        if($hour < 14)
-        {
-            $dt = $this->datetime->setTime(14, 0);
-
-            return new Date($dt);
-        }
-
-        if($hour < 17)
-        {
-            $nextHour = $day === 5 ? 16: 17;
-            $dt = $this->datetime->setTime($nextHour, 30);
-
-            return new Date($dt);
-        }
-
-        $dt = $this->datetime->add(new \DateInterval('P1D'));
-        $dt = $dt->setTime(8, 30);
-
-        return new Date($dt);
-
+        return $this->modify("tomorrow")->getNextBoundary();
     }
 
     public function isAtWork()
     {
-        $day = (int) $this->datetime->format('N');
-        $hour = (int) $this->datetime->format('H');
-        $minute = (int) $this->datetime->format('i');
-
-        if($day >= 6)
+        foreach($this->getWorkHours() as $startTime => $endTime)
         {
-            return false;
-        }
+            list($startHour, $startMinute) = explode(':', $startTime);
+            list($endHour, $endMinute) = explode(':', $endTime);
 
-        if($hour < 8 || $hour > 17)
-        {
-            return false;
-        }
-
-        if($hour === 8)
-        {
-            return ($minute >= 30);
-        }
-
-        if($day === 5)
-        {
-            if($hour === 16)
+            $startDate = $this->setTime($startHour, $startMinute);
+            $endDate = $this->setTime($endHour, $endMinute);
+            if($startDate->beforeOrEqual($this) && $this->before($endDate))
             {
-                return ($minute < 30);
-            }
-            if($hour > 16)
-            {
-                return false;
+                return true;
             }
         }
 
-        if($hour === 17)
+        return false;
+    }
+
+    private function getEasterDatetime($year)
+    {
+        $march21 = new \DateTimeImmutable("$year-03-21");
+        $nbDaysBetween21MarchAndPaques = easter_days($year);
+
+        return $march21->add(new \DateInterval("P{$nbDaysBetween21MarchAndPaques}D"));
+    }
+
+    private function isHoliday()
+    {
+        $annee = $this->format('Y');
+        $easterSunday = $this->getEasterDatetime($annee);
+
+        $holidays = [
+            "Jour de l'an" => '01-01',
+            "Fête du travail" => '05-01',
+            "8 Mai 1945" => '05-08',
+            "Fête nationnale" => '07-14',
+            "Assomption" => '08-15',
+            "La Toussaint" => '11-01',
+            "Armistice" => '11-11',
+            "Noël" => '12-25',
+            "Lundi de Pâques" => $easterSunday->modify("+1 day")->format('m-d'),
+            "Jeudi de l'Ascencion" => $easterSunday->modify("+39 day")->format('m-d'),
+            "Lundi de Pentecôte" => $easterSunday->modify("+50 day")->format('m-d'),
+        ];
+
+        return in_array($this->format('m-d'), $holidays);
+    }
+
+    private function getWorkHours()
+    {
+        if($this->isHoliday())
         {
-            return ($minute < 30);
+            return [];
         }
 
-        if($hour === 13)
-        {
-            return false;
-        }
+        $openingHours = [
+            'Mon' => ['08:30' => '13:00', '14:00' => '17:30'],
+            'Tue' => ['08:30' => '13:00', '14:00' => '17:30'],
+            'Wed' => ['08:30' => '13:00', '14:00' => '17:30'],
+            'Thu' => ['08:30' => '13:00', '14:00' => '17:30'],
+            'Fri' => ['08:30' => '13:00', '14:00' => '16:30'],
+        ];
 
-        return true;
+        return isset($openingHours[$this->format('D')]) ? $openingHours[$this->format('D')] : [];
     }
 }
